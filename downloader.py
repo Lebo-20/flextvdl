@@ -57,15 +57,19 @@ async def download_hls(url: str, path: str, retries: int = 3):
                 await asyncio.sleep(5)
     return False
 
-async def download_all_episodes(episodes, download_dir: str, semaphore_count: int = 5):
+async def download_all_episodes(episodes, download_dir: str, semaphore_count: int = 5, progress_callback=None):
     """
     Downloads all episodes concurrently.
     episodes: list of dicts with 'episode' and 'video_url'
     """
     os.makedirs(download_dir, exist_ok=True)
     semaphore = asyncio.Semaphore(semaphore_count)
+    
+    total = len(episodes)
+    downloaded = 0
 
     async def limited_download(ep):
+        nonlocal downloaded
         async with semaphore:
             # Episode number formatting
             ep_num_val = ep.get('episode') or 'unk'
@@ -83,12 +87,14 @@ async def download_all_episodes(episodes, download_dir: str, semaphore_count: in
             if ".m3u8" in url.lower():
                 success = await download_hls(url, filepath)
             else:
-                # Increased timeout to 120s
                 async with httpx.AsyncClient(timeout=120) as client:
                     success = await download_file(client, url, filepath)
             
             if success:
-                logger.info(f"Downloaded {filename}")
+                downloaded += 1
+                if progress_callback:
+                    await progress_callback(downloaded, total)
+                logger.info(f"Downloaded {filename} ({downloaded}/{total})")
             return success
 
     results = await asyncio.gather(*(limited_download(ep) for ep in episodes))
