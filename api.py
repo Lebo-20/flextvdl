@@ -4,7 +4,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-BASE_URL = "https://drakula.dramabos.my.id/api/starshort"
+API_DOMAIN = "dramabox.dramabos.online"
+BASE_URL = f"https://{API_DOMAIN}/api/starshort"
 AUTH_CODE = "A8D6AB170F7B89F2182561D3B32F390D"
 
 async def _fetch(url: str, params: dict = None):
@@ -59,7 +60,7 @@ async def search_dramas(query: str, page: int = 1):
         return res
         
     # Try FlexTV fallback
-    url_flex = f"https://drakula.dramabos.my.id/api/flextv/search"
+    url_flex = f"https://{API_DOMAIN}/api/flextv/search"
     return await _fetch(url_flex, {"keyword": query, "p": page})
 
 async def get_drama_detail(drama_id: str):
@@ -71,7 +72,7 @@ async def get_drama_detail(drama_id: str):
         return res
         
     # FlexTV fallback
-    url_flex = f"https://drakula.dramabos.my.id/api/flextv/detail/{drama_id}"
+    url_flex = f"https://{API_DOMAIN}/api/flextv/detail/{drama_id}"
     return await _fetch(url_flex)
 
 async def get_all_episodes(drama_id: str):
@@ -85,7 +86,7 @@ async def get_all_episodes(drama_id: str):
         return data["episodes"]
         
     # FlexTV fallback
-    url_flex = f"https://drakula.dramabos.my.id/api/flextv/episodes/{drama_id}/videos"
+    url_flex = f"https://{API_DOMAIN}/api/flextv/episodes/{drama_id}/videos"
     return await _fetch(url_flex)
 
 async def get_watch_info(drama_id: str, episode: int):
@@ -97,5 +98,5 @@ async def get_watch_info(drama_id: str, episode: int):
         return res
         
     # FlexTV fallback
-    url_flex = f"https://drakula.dramabos.my.id/api/flextv/watch/{drama_id}/{episode}"
+    url_flex = f"https://{API_DOMAIN}/api/flextv/watch/{drama_id}/{episode}"
     return await _fetch(url_flex)
