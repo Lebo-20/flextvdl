@@ -373,7 +373,7 @@ async def auto_mode_loop():
             continue
             
         try:
-            interval = 5 if is_initial_run else 15
+            interval = 5 if is_initial_run else 120
             logger.info(f"🔍 Scanning StarShort (Next scan in {interval}m)...")
             
             # Combine latest, hot, recommended and trending
@@ -487,7 +487,9 @@ async def auto_mode_loop():
                     except: pass
                     # continue to next drama
                     
-                await asyncio.sleep(15) 
+                # Cooldown 30 minutes after processing
+                logger.info("💤 Auto-mode cooling down for 30 minutes...")
+                await asyncio.sleep(30 * 60) 
                 
             is_initial_run = False
             for _ in range(interval * 60):
