@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-API_DOMAIN = "dramabox.dramabos.online"
+API_DOMAIN = "drakula.dramabos.online"
 BASE_URL = f"https://{API_DOMAIN}/api/starshort"
 AUTH_CODE = "A8D6AB170F7B89F2182561D3B32F390D"
 
